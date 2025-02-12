@@ -375,14 +375,6 @@ namespace Microsoft.Xna.Framework
 
 		public static void ProgramExit(object sender, EventArgs e)
 		{
-			AudioEngine.ProgramExiting = true;
-
-			if (SoundEffect.FAudioContext.Context != null)
-			{
-				SoundEffect.FAudioContext.Context.Dispose();
-			}
-			Media.MediaPlayer.DisposeIfNecessary();
-
 			// This _should_ be the last SDL call we make...
 			SDL.SDL_QuitSubSystem(
 				SDL.SDL_INIT_VIDEO |
@@ -1196,9 +1188,8 @@ namespace Microsoft.Xna.Framework
 					}
 					else
 					{
-						// Just reset, this is probably a hotplug
-						game.GraphicsDevice.Reset(
-							game.GraphicsDevice.PresentationParameters,
+						// Quietly update, this is probably a hotplug
+						game.GraphicsDevice.QuietlyUpdateAdapter(
 							currentAdapter
 						);
 					}
@@ -1458,7 +1449,7 @@ namespace Microsoft.Xna.Framework
 
 		private static string GetBaseDirectory()
 		{
-			if (Environment.GetEnvironmentVariable("FNA_SDL2_FORCE_BASE_PATH") != "1")
+			if (Environment.GetEnvironmentVariable("FNA_SDL_FORCE_BASE_PATH") != "1")
 			{
 				// If your platform uses a CLR, you want to be in this list!
 				if (	OSVersion.Equals("Windows") ||
